@@ -33,7 +33,6 @@ function createLiulToDo(task) {
   toggle.type = "checkbox";
 
   toggle.checked = statusTask;
-  toggle.onchange = changeOfTaskStatus;
 
   var label = document.createElement("label");
   label.innerHTML = task.text;
@@ -41,7 +40,6 @@ function createLiulToDo(task) {
   var buttonDeleteLi = document.createElement("button");
   buttonDeleteLi.className = "destroy";
   buttonDeleteLi.id = task.id;
-  buttonDeleteLi.onclick = deleteCurentTask;
 
   var input = document.createElement("input");
   input.className = "edit";
@@ -74,19 +72,4 @@ function getId(tasksList) {
   });
 
   return String(id);
-}
-function deleteCurentTask(event) {
-  li = event.target.offsetParent;
-  tasksList.forEach(function(elem, index) {
-    if (event.target.id == elem.id) {
-      elem.id = index;
-      tasksList.splice(index, 1);
-      ulToDo.removeChild(li);
-    }
-  });
-}
-function changeOfTaskStatus(event) {
-  var li = event.target.offsetParent;
-  var checked = event.target.checked;
-  li.className = checked ? "completed" : "";
 }
