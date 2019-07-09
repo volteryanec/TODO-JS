@@ -8,17 +8,17 @@ var tasksList = [
   { id: "7", text: "generate", completed: true }
 ];
 
-var ulToDo = getTodoList();
+var ulToDo = document.getElementsByClassName("todo-list")[0];
+console.log(ulToDo);
 
 window.onload = function() {
   tasksList.forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
 };
-function getTodoList() {
-  return document.getElementsByClassName("todo-list")[0];
-}
+
 function createLiulToDo(task) {
+  newTodo.onchange = addNewTodo;
   var li = document.createElement("li");
 
   var classNameli = task.completed ? "completed" : "";
@@ -34,6 +34,7 @@ function createLiulToDo(task) {
   toggle.type = "checkbox";
 
   toggle.checked = statusTask;
+  toggle.onchange = changeOfTaskStatus;
 
   var label = document.createElement("label");
   label.innerHTML = task.text;
@@ -41,6 +42,7 @@ function createLiulToDo(task) {
   var buttonDeleteLi = document.createElement("button");
   buttonDeleteLi.className = "destroy";
   buttonDeleteLi.id = task.id;
+  buttonDeleteLi.onclick = deleteCurentTask;
 
   var input = document.createElement("input");
   input.className = "edit";
@@ -53,13 +55,10 @@ function createLiulToDo(task) {
   div.appendChild(buttonDeleteLi);
   return li;
 }
-function getNewTodo() {
-  return document.getElementsByClassName("new-todo")[0];
-}
-var newTodo = getNewTodo();
-  newTodo.onchange = addNewTodo
+
+var newTodo = document.getElementsByClassName("new-todo")[0];
+
 function addNewTodo(event) {
-  
   var newTask = {};
   newTask.id = getId(tasksList);
   newTask.text = event.target.value;
@@ -70,6 +69,27 @@ function addNewTodo(event) {
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
-  var id = tasksList.length + 1;
+  var id;
+  tasksList.forEach(function(task) {
+    if (task.id >= tasksList.length) id = +task.id + 1;
+  });
+
   return String(id);
 }
+function deleteCurentTask(event) {
+  li = event.target.offsetParent;
+  tasksList.forEach(function(elem, index) {
+    if (event.target.id == elem.id) {
+      elem.id = index;
+      tasksList.splice(index, 1);
+      ulToDo.removeChild(li);
+    }
+  });
+}
+
+function changeOfTaskStatus(event) {
+  var li = event.target.offsetParent;
+  var checked = event.target.checked;
+  li.className = checked ? "completed" : "";
+}
+
