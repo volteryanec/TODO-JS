@@ -9,7 +9,6 @@ var tasksList = [
 ];
 
 var ulToDo = document.getElementsByClassName("todo-list")[0];
-console.log(ulToDo);
 
 window.onload = function() {
   tasksList.forEach(function(task) {
@@ -86,10 +85,8 @@ function deleteCurentTask(event) {
     }
   });
 }
-
 function changeOfTaskStatus(event) {
   var li = event.target.offsetParent;
   var checked = event.target.checked;
   li.className = checked ? "completed" : "";
 }
-
