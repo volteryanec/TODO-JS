@@ -31,7 +31,7 @@ function createLiulToDo(task) {
   var toggle = document.createElement("input");
   toggle.className = "toggle";
   toggle.type = "checkbox";
-
+  toggle.onchange = changeOfTaskStatus;
   toggle.checked = statusTask;
 
   var label = document.createElement("label");
@@ -83,4 +83,9 @@ function deleteCurentTask(event) {
       ulToDo.removeChild(li);
     }
   });
+}
+function changeOfTaskStatus(event) {
+  var li = event.target.offsetParent;
+  var checked = event.target.checked;
+  li.className = checked ? "completed" : "";
 }
