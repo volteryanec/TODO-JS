@@ -36,6 +36,7 @@ function createLiulToDo(task) {
 
   var label = document.createElement("label");
   label.innerHTML = task.text;
+  label.ondblclick = changeClassLi;
 
   var buttonDeleteLi = document.createElement("button");
   buttonDeleteLi.className = "destroy";
@@ -45,6 +46,8 @@ function createLiulToDo(task) {
   var input = document.createElement("input");
   input.className = "edit";
   input.innerHTML = task.text;
+  input.onkeypress = changeInput;
+  input.onblur = inputEditBlur;
 
   li.appendChild(div);
   li.appendChild(input);
@@ -75,7 +78,7 @@ function getId(tasksList) {
   return String(id);
 }
 function deleteCurentTask(event) {
-  li = event.target.offsetParent;
+  li = event.target.parentElement.parentElement;
   tasksList.forEach(function(elem, index) {
     if (event.target.id == elem.id) {
       elem.id = index;
@@ -85,7 +88,48 @@ function deleteCurentTask(event) {
   });
 }
 function changeOfTaskStatus(event) {
-  var li = event.target.offsetParent;
+  var li = event.target.parentElement.parentElement;
   var checked = event.target.checked;
   li.className = checked ? "completed" : "";
+}
+function changeClassLi() {
+  li = event.target.parentElement.parentElement;
+  li.className = li.className == "completed" ? "completed editing" : "editing";
+  li.lastElementChild.value = this.textContent;
+  inputEdit = li.getElementsByClassName("edit")[0];
+  inputEdit.focus();
+}
+function changeInput() {
+  if (event.key === "Enter") {
+    label = li.querySelector("label");
+    label.textContent = this.value;
+    event.target.textContent = label.textContent;
+
+    li = event.target.parentElement;
+    li.className = li.className == "completed editing" ? "completed" : "";
+    tasksList.forEach(function(elem) {
+      if (li.id == elem.id) {
+        elem.text = label.textContent;
+      }
+    });
+  }
+}
+function inputEditBlur() {
+  if (event.target.value == "") {
+    li = event.target.parentElement;
+    tasksList.forEach(function(elem, index) {
+      if (event.target.parentElement.id == elem.id) {
+        elem.id = index;
+        tasksList.splice(index, 1);
+        ulToDo.removeChild(li);
+      }
+    });
+  }
+  if (event.target.value != "") {
+    label = li.querySelector("label");
+    label.textContent = this.value;
+    event.target.textContent = label.textContent;
+    li = event.target.parentElement;
+    li.className = li.className == "completed editing" ? "completed" : "";
+  }
 }
