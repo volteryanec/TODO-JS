@@ -9,15 +9,16 @@ var tasksList = [
 ];
 
 var ulToDo = document.getElementsByClassName("todo-list")[0];
+var newTodo = document.getElementsByClassName("new-todo")[0];
 
 window.onload = function() {
   tasksList.forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
+  newTodo.onchange = addNewTodo;
 };
 
 function createLiulToDo(task) {
-  newTodo.onchange = addNewTodo;
   var li = document.createElement("li");
 
   var classNameli = task.completed ? "completed" : "";
@@ -56,9 +57,6 @@ function createLiulToDo(task) {
   div.appendChild(buttonDeleteLi);
   return li;
 }
-
-var newTodo = document.getElementsByClassName("new-todo")[0];
-
 function addNewTodo(event) {
   var newTask = {};
   newTask.id = getId(tasksList);
@@ -101,22 +99,26 @@ function changeClassLi() {
 }
 function changeInput() {
   if (event.key === "Enter") {
+    if (event.target.value == "") {
+      tasksList.forEach(function(elem, index) {
+        if (event.target.parentElement.id == elem.id) {
+          elem.id = index;
+          tasksList.splice(index, 1);
+          ulToDo.removeChild(li);
+        }
+      });
+    }
+    inputEdit = li.getElementsByClassName("edit")[0];
+    inputEdit.onblur = false;
+    li = event.target.parentElement;
     label = li.querySelector("label");
     label.textContent = this.value;
-    event.target.textContent = label.textContent;
-
-    li = event.target.parentElement;
     li.className = li.className == "completed editing" ? "completed" : "";
-    tasksList.forEach(function(elem) {
-      if (li.id == elem.id) {
-        elem.text = label.textContent;
-      }
-    });
   }
 }
 function inputEditBlur() {
+  li = event.target.parentElement;
   if (event.target.value == "") {
-    li = event.target.parentElement;
     tasksList.forEach(function(elem, index) {
       if (event.target.parentElement.id == elem.id) {
         elem.id = index;
@@ -128,7 +130,6 @@ function inputEditBlur() {
   if (event.target.value != "") {
     label = li.querySelector("label");
     label.textContent = this.value;
-    event.target.textContent = label.textContent;
     li = event.target.parentElement;
     li.className = li.className == "completed editing" ? "completed" : "";
   }
