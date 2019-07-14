@@ -77,13 +77,7 @@ function getId(tasksList) {
 }
 function deleteCurentTask(event) {
   li = event.target.parentElement.parentElement;
-  tasksList.forEach(function(elem, index) {
-    if (event.target.id == elem.id) {
-      elem.id = index;
-      tasksList.splice(index, 1);
-      ulToDo.removeChild(li);
-    }
-  });
+  deleteCurentLI();
 }
 function changeOfTaskStatus(event) {
   var li = event.target.parentElement.parentElement;
@@ -92,7 +86,7 @@ function changeOfTaskStatus(event) {
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
-  li.className = li.className == "completed" ? "completed editing" : "editing";
+  li.className = li.className ? li.className + " editing" : "editing";
   li.lastElementChild.value = this.textContent;
   inputEdit = li.getElementsByClassName("edit")[0];
   inputEdit.focus();
@@ -100,13 +94,7 @@ function changeClassLi() {
 function changeInput() {
   if (event.key === "Enter") {
     if (event.target.value == "") {
-      tasksList.forEach(function(elem, index) {
-        if (event.target.parentElement.id == elem.id) {
-          elem.id = index;
-          tasksList.splice(index, 1);
-          ulToDo.removeChild(li);
-        }
-      });
+      deleteCurentLI();
     }
     inputEdit = li.getElementsByClassName("edit")[0];
     inputEdit.onblur = false;
@@ -119,13 +107,7 @@ function changeInput() {
 function inputEditBlur() {
   li = event.target.parentElement;
   if (event.target.value == "") {
-    tasksList.forEach(function(elem, index) {
-      if (event.target.parentElement.id == elem.id) {
-        elem.id = index;
-        tasksList.splice(index, 1);
-        ulToDo.removeChild(li);
-      }
-    });
+    deleteCurentLI();
   }
   if (event.target.value != "") {
     label = li.querySelector("label");
@@ -133,4 +115,13 @@ function inputEditBlur() {
     li = event.target.parentElement;
     li.className = li.className == "completed editing" ? "completed" : "";
   }
+}
+function deleteCurentLI() {
+  tasksList.forEach(function(elem, index) {
+    if (li.id == elem.id) {
+      elem.id = index;
+      tasksList.splice(index, 1);
+      ulToDo.removeChild(li);
+    }
+  });
 }
