@@ -9,15 +9,16 @@ var tasksList = [
 ];
 
 var ulToDo = document.getElementsByClassName("todo-list")[0];
+var newTodo = document.getElementsByClassName("new-todo")[0];
 
 window.onload = function() {
   tasksList.forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
+  newTodo.onchange = addNewTodo;
 };
 
 function createLiulToDo(task) {
-  newTodo.onchange = addNewTodo;
   var li = document.createElement("li");
 
   var classNameli = task.completed ? "completed" : "";
@@ -36,6 +37,7 @@ function createLiulToDo(task) {
 
   var label = document.createElement("label");
   label.innerHTML = task.text;
+  label.ondblclick = changeClassLi;
 
   var buttonDeleteLi = document.createElement("button");
   buttonDeleteLi.className = "destroy";
@@ -45,6 +47,8 @@ function createLiulToDo(task) {
   var input = document.createElement("input");
   input.className = "edit";
   input.innerHTML = task.text;
+  input.onkeypress = changeInput;
+  input.onblur = inputEditBlur;
 
   li.appendChild(div);
   li.appendChild(input);
@@ -53,9 +57,6 @@ function createLiulToDo(task) {
   div.appendChild(buttonDeleteLi);
   return li;
 }
-
-var newTodo = document.getElementsByClassName("new-todo")[0];
-
 function addNewTodo(event) {
   var newTask = {};
   newTask.id = getId(tasksList);
@@ -75,17 +76,52 @@ function getId(tasksList) {
   return String(id);
 }
 function deleteCurentTask(event) {
-  li = event.target.offsetParent;
+  li = event.target.parentElement.parentElement;
+  deleteCurentLI();
+}
+function changeOfTaskStatus(event) {
+  var li = event.target.parentElement.parentElement;
+  var checked = event.target.checked;
+  li.className = checked ? "completed" : "";
+}
+function changeClassLi() {
+  li = event.target.parentElement.parentElement;
+  li.className = li.className ? li.className + " editing" : "editing";
+  li.lastElementChild.value = this.textContent;
+  inputEdit = li.getElementsByClassName("edit")[0];
+  inputEdit.focus();
+}
+function changeInput() {
+  if (event.key === "Enter") {
+    if (event.target.value == "") {
+      deleteCurentLI();
+    }
+    inputEdit = li.getElementsByClassName("edit")[0];
+    inputEdit.onblur = false;
+    li = event.target.parentElement;
+    label = li.querySelector("label");
+    label.textContent = this.value;
+    li.className = li.className == "completed editing" ? "completed" : "";
+  }
+}
+function inputEditBlur() {
+  li = event.target.parentElement;
+  if (event.target.value == "") {
+    deleteCurentLI();
+  }
+  if (event.target.value != "") {
+    label = li.querySelector("label");
+    label.textContent = this.value;
+    li = event.target.parentElement;
+    li.className = li.className == "completed editing" ? "completed" : "";
+  }
+}
+function deleteCurentLI() {
   tasksList.forEach(function(elem, index) {
-    if (event.target.id == elem.id) {
+    if (li.id == elem.id) {
       elem.id = index;
       tasksList.splice(index, 1);
       ulToDo.removeChild(li);
     }
   });
-}
-function changeOfTaskStatus(event) {
-  var li = event.target.offsetParent;
-  var checked = event.target.checked;
-  li.className = checked ? "completed" : "";
 }
