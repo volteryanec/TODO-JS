@@ -96,6 +96,11 @@ function changeOfTaskStatus(event) {
   });
   countItemValue();
 }
+function changeOfTaskStatus(event) {
+  var li = event.target.parentElement.parentElement;
+  var checked = event.target.checked;
+  li.className = checked ? "completed" : "";
+}
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
   li.className = li.className ? li.className + " editing" : "editing";
