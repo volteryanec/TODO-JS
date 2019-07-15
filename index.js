@@ -20,6 +20,7 @@ window.onload = function() {
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
   displayFoooter();
+  hiddenButton();
 };
 
 function createLiulToDo(task) {
@@ -95,6 +96,7 @@ function changeOfTaskStatus(event) {
     if (task.id == li.id) task.completed = checked;
   });
   countItemValue();
+  hiddenButton();
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -150,6 +152,14 @@ function createFooter() {
   );
   footerElem.appendChild(spanTodoCount);
   strong.textContent = getDefaultCountItem();
+  var ulTodoCount = document.createElement("ul");
+  ulTodoCount.className = "filters";
+  footerElem.appendChild(ulTodoCount);
+  var buttonClearComplite = document.createElement("button");
+  buttonClearComplite.className = "clear-completed";
+  buttonClearComplite.textContent = "Clear completed";
+  buttonClearComplite.onclick = getClearActivTask;
+  ulTodoCount.appendChild(buttonClearComplite);
   return footerElem;
 }
 function countItemValue() {
@@ -168,4 +178,22 @@ function getDefaultCountItem() {
 function displayFoooter() {
   if (tasksList.length == 0) footer.style.display = "none";
   else footer.style.display = "block";
+}
+function getClearActivTask() {
+  var LiArr = ulToDo.getElementsByTagName("li");
+  var index;
+  for (i = LiArr.length - 1; i >= 0; i--) {
+    if (LiArr[i].className != "") {
+      index = LiArr[i].id;
+      tasksList.splice(index - 1, 1);
+      LiArr[i].remove(LiArr[i]);
+    }
+  }
+  buttonComplite.hidden = true;
+}
+function hiddenButton() {
+  buttonComplite = document.getElementsByClassName("clear-completed")[0];
+  tasksList.forEach(function(task) {
+    if (task.completed == true) buttonComplite.hidden = false;
+  });
 }
