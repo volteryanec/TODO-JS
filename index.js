@@ -19,7 +19,6 @@ window.onload = function() {
   });
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
-  hiddenButton();
 };
 
 function createLiulToDo(task) {
@@ -84,6 +83,7 @@ function deleteCurentTask(event) {
   li = event.target.parentElement.parentElement;
   deleteCurentLI();
   countItemValue();
+  hiddenButton();
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
@@ -182,12 +182,16 @@ function getClearActivTask() {
       LiArr[i].remove(LiArr[i]);
     }
   }
+  buttonComplite = document.getElementsByClassName("clear-completed")[0];
   buttonComplite.hidden = true;
- 
 }
 function hiddenButton() {
   buttonComplite = document.getElementsByClassName("clear-completed")[0];
-  tasksList.forEach(function(task) {
-    if (task.completed == true) buttonComplite.hidden = false;
-  });
+  function checkCompleted(elem) {
+    return elem.completed === true;
   }
+  if (tasksList.some(checkCompleted) === true) buttonComplite.hidden = false;
+  else {
+    buttonComplite.hidden = true;
+  }
+}
