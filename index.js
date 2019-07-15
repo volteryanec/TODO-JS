@@ -10,12 +10,16 @@ var tasksList = [
 
 var ulToDo = document.getElementsByClassName("todo-list")[0];
 var newTodo = document.getElementsByClassName("new-todo")[0];
+var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
+var footer = createFooter();
 
 window.onload = function() {
   tasksList.forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
   newTodo.onchange = addNewTodo;
+  parentDiv.appendChild(footer);
+  displayFoooter();
 };
 
 function createLiulToDo(task) {
@@ -65,6 +69,8 @@ function addNewTodo(event) {
   tasksList.push(newTask);
   ulToDo.appendChild(createLiulToDo(newTask));
   event.target.value = "";
+  countItemValue();
+  displayFoooter();
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -78,6 +84,17 @@ function getId(tasksList) {
 function deleteCurentTask(event) {
   li = event.target.parentElement.parentElement;
   deleteCurentLI();
+  countItemValue();
+  displayFoooter();
+}
+function changeOfTaskStatus(event) {
+  li = event.target.parentElement.parentElement;
+  checked = event.target.checked;
+  li.className = checked ? "completed" : "";
+  tasksList.forEach(function(task) {
+    if (task.id == li.id) task.completed = checked;
+  });
+  countItemValue();
 }
 function changeOfTaskStatus(event) {
   var li = event.target.parentElement.parentElement;
@@ -124,4 +141,36 @@ function deleteCurentLI() {
       ulToDo.removeChild(li);
     }
   });
+}
+function createFooter() {
+  var footerElem = document.createElement("footer");
+  footerElem.className = "footer";
+  var spanTodoCount = document.createElement("span");
+  spanTodoCount.className = "todo-count";
+  var strong = document.createElement("strong");
+  spanTodoCount.appendChild(strong);
+  strong.insertAdjacentHTML(
+    "afterEnd",
+    "<span> </span><span>item</span><span> left</span>"
+  );
+  footerElem.appendChild(spanTodoCount);
+  strong.textContent = getDefaultCountItem();
+  return footerElem;
+}
+function countItemValue() {
+  var strongValue = document.querySelector("strong");
+  strongValue.textContent = getDefaultCountItem();
+}
+function getDefaultCountItem() {
+  var count = 0;
+  for (var i = 0; i < tasksList.length; i++) {
+    if (tasksList[i].completed === false) {
+      count++;
+    }
+  }
+  return count;
+}
+function displayFoooter() {
+  if (tasksList.length == 0) footer.style.display = "none";
+  else footer.style.display = "block";
 }
