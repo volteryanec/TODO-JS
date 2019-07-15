@@ -19,7 +19,6 @@ window.onload = function() {
   });
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
-  displayFoooter();
   hiddenButton();
 };
 
@@ -71,7 +70,6 @@ function addNewTodo(event) {
   ulToDo.appendChild(createLiulToDo(newTask));
   event.target.value = "";
   countItemValue();
-  displayFoooter();
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -86,7 +84,6 @@ function deleteCurentTask(event) {
   li = event.target.parentElement.parentElement;
   deleteCurentLI();
   countItemValue();
-  displayFoooter();
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
@@ -175,10 +172,6 @@ function getDefaultCountItem() {
   }
   return count;
 }
-function displayFoooter() {
-  if (tasksList.length == 0) footer.style.display = "none";
-  else footer.style.display = "block";
-}
 function getClearActivTask() {
   var LiArr = ulToDo.getElementsByTagName("li");
   var index;
@@ -190,10 +183,11 @@ function getClearActivTask() {
     }
   }
   buttonComplite.hidden = true;
+ 
 }
 function hiddenButton() {
   buttonComplite = document.getElementsByClassName("clear-completed")[0];
   tasksList.forEach(function(task) {
     if (task.completed == true) buttonComplite.hidden = false;
   });
-}
+  }
