@@ -149,14 +149,8 @@ function createFooter() {
   );
   footerElem.appendChild(spanTodoCount);
   strong.textContent = getDefaultCountItem();
-  var ulTodoCount = document.createElement("ul");
-  ulTodoCount.className = "filters";
-  footerElem.appendChild(ulTodoCount);
-  var buttonClearComplite = document.createElement("button");
-  buttonClearComplite.className = "clear-completed";
-  buttonClearComplite.textContent = "Clear completed";
-  buttonClearComplite.onclick = getClearActivTask;
-  ulTodoCount.appendChild(buttonClearComplite);
+  footerElem.appendChild(createulTodoCount());
+
   return footerElem;
 }
 function countItemValue() {
@@ -190,5 +184,73 @@ function hiddenButton() {
   if (tasksList.some(checkCompleted) === true) buttonComplite.hidden = false;
   else {
     buttonComplite.hidden = true;
+  }
+}
+function createulTodoCount() {
+  ulTodoCount = document.createElement("ul");
+  ulTodoCount.className = "filters";
+
+  li = document.createElement("li");
+  a = document.createElement("a");
+  span = document.createElement("span");
+  span.textContent = " ";
+  a.href = "#/";
+  a.className = "selected";
+  a.textContent = "All";
+  a.onclick = viewAllTask;
+  ulTodoCount.appendChild(li);
+  li.appendChild(a);
+  ulTodoCount.appendChild(span);
+
+  li2 = document.createElement("li");
+  ulTodoCount.appendChild(li2);
+  a2 = document.createElement("a");
+  a2.href = "#/active";
+  a2.className = "";
+  a2.textContent = "Active";
+  a2.onclick = viewActiveTask;
+  li2.appendChild(a2);
+  span2 = document.createElement("span");
+  span2.textContent = " ";
+  ulTodoCount.appendChild(span2);
+
+  li3 = document.createElement("li");
+  ulTodoCount.appendChild(li3);
+  a3 = document.createElement("a");
+  a3.href = "#/completed";
+  a3.className = "";
+  a3.textContent = "Completed";
+  a3.onclick = viewCompletedTask;
+  li3.appendChild(a3);
+
+  buttonClearComplite = document.createElement("button");
+  buttonClearComplite.className = "clear-completed";
+  buttonClearComplite.textContent = "Clear completed";
+  buttonClearComplite.onclick = getClearActivTask;
+  ulTodoCount.appendChild(buttonClearComplite);
+
+  return ulTodoCount;
+}
+
+function viewAllTask() {
+  liArr = ulToDo.getElementsByTagName("li");
+  for (var i = 0; i < liArr.length; i++) {
+    liArr[i].style.display = "block";
+  }
+}
+function viewActiveTask() {
+  liArr = ulToDo.getElementsByTagName("li");
+  for (var i = 0; i < liArr.length; i++) {
+    if (liArr[i].className == "completed") {
+      liArr[i].style.display = "none";
+    } else liArr[i].style.display = "block";
+  }
+}
+function viewCompletedTask() {
+  liArr = ulToDo.getElementsByTagName("li");
+  for (var i = 0; i < liArr.length; i++) {
+    if (liArr[i].className == "") {
+      liArr[i].style.display = "none";
+    } else liArr[i].style.display = "block";
   }
 }
