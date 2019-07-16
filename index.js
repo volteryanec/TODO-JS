@@ -174,16 +174,13 @@ function getDefaultCountItem() {
 }
 function getClearActivTask() {
   var LiArr = ulToDo.getElementsByTagName("li");
-  var index;
   for (i = LiArr.length - 1; i >= 0; i--) {
-    if (LiArr[i].className != "") {
-      index = LiArr[i].id;
-      tasksList.splice(index - 1, 1);
+    if (LiArr[i].className == "completed") {
+      tasksList.splice(i, 1);
       LiArr[i].remove(LiArr[i]);
     }
   }
-  buttonComplite = document.getElementsByClassName("clear-completed")[0];
-  buttonComplite.hidden = true;
+  hiddenButton();
 }
 function hiddenButton() {
   buttonComplite = document.getElementsByClassName("clear-completed")[0];
