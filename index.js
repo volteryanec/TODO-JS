@@ -19,7 +19,6 @@ window.onload = function() {
   });
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
-  displayFoooter();
 };
 
 function createLiulToDo(task) {
@@ -70,7 +69,6 @@ function addNewTodo(event) {
   ulToDo.appendChild(createLiulToDo(newTask));
   event.target.value = "";
   countItemValue();
-  displayFoooter();
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -85,7 +83,7 @@ function deleteCurentTask(event) {
   li = event.target.parentElement.parentElement;
   deleteCurentLI();
   countItemValue();
-  displayFoooter();
+  hiddenButton();
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
@@ -95,6 +93,7 @@ function changeOfTaskStatus(event) {
     if (task.id == li.id) task.completed = checked;
   });
   countItemValue();
+  hiddenButton();
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -150,6 +149,14 @@ function createFooter() {
   );
   footerElem.appendChild(spanTodoCount);
   strong.textContent = getDefaultCountItem();
+  var ulTodoCount = document.createElement("ul");
+  ulTodoCount.className = "filters";
+  footerElem.appendChild(ulTodoCount);
+  var buttonClearComplite = document.createElement("button");
+  buttonClearComplite.className = "clear-completed";
+  buttonClearComplite.textContent = "Clear completed";
+  buttonClearComplite.onclick = getClearActivTask;
+  ulTodoCount.appendChild(buttonClearComplite);
   return footerElem;
 }
 function countItemValue() {
@@ -165,7 +172,23 @@ function getDefaultCountItem() {
   }
   return count;
 }
-function displayFoooter() {
-  if (tasksList.length == 0) footer.style.display = "none";
-  else footer.style.display = "block";
+function getClearActivTask() {
+  var LiArr = ulToDo.getElementsByTagName("li");
+  for (i = LiArr.length - 1; i >= 0; i--) {
+    if (LiArr[i].className == "completed") {
+      tasksList.splice(i, 1);
+      LiArr[i].remove(LiArr[i]);
+    }
+  }
+  hiddenButton();
+}
+function hiddenButton() {
+  buttonComplite = document.getElementsByClassName("clear-completed")[0];
+  function checkCompleted(elem) {
+    return elem.completed === true;
+  }
+  if (tasksList.some(checkCompleted) === true) buttonComplite.hidden = false;
+  else {
+    buttonComplite.hidden = true;
+  }
 }
