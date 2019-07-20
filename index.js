@@ -237,6 +237,7 @@ function viewAllTask() {
   for (var i = 0; i < liArr.length; i++) {
     liArr[i].style.display = "block";
   }
+  changeClassHref();
 }
 function viewActiveTask() {
   liArr = ulToDo.getElementsByTagName("li");
@@ -245,6 +246,7 @@ function viewActiveTask() {
       liArr[i].style.display = "none";
     } else liArr[i].style.display = "block";
   }
+  changeClassHref();
 }
 function viewCompletedTask() {
   liArr = ulToDo.getElementsByTagName("li");
@@ -253,4 +255,12 @@ function viewCompletedTask() {
       liArr[i].style.display = "none";
     } else liArr[i].style.display = "block";
   }
+  changeClassHref();
+}
+function changeClassHref() {
+  arrA = ulTodoCount.getElementsByTagName("a");
+  for (i = 0; i < arrA.length; i++) {
+    arrA[i].className = "";
+  }
+  event.target.className = "selected";
 }
