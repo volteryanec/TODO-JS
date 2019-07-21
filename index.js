@@ -197,7 +197,7 @@ function createulTodoCount() {
   a.href = "#/";
   a.className = "selected";
   a.textContent = "All";
-  a.onclick = viewAllTask;
+  a.onclick = enableFilters;
   ulTodoCount.appendChild(li);
   li.appendChild(a);
   ulTodoCount.appendChild(span);
@@ -208,7 +208,7 @@ function createulTodoCount() {
   a2.href = "#/active";
   a2.className = "";
   a2.textContent = "Active";
-  a2.onclick = viewActiveTask;
+  a2.onclick = enableFilters;
   li2.appendChild(a2);
   span2 = document.createElement("span");
   span2.textContent = " ";
@@ -220,7 +220,7 @@ function createulTodoCount() {
   a3.href = "#/completed";
   a3.className = "";
   a3.textContent = "Completed";
-  a3.onclick = viewCompletedTask;
+  a3.onclick = enableFilters;
   li3.appendChild(a3);
 
   buttonClearComplite = document.createElement("button");
@@ -232,35 +232,32 @@ function createulTodoCount() {
   return ulTodoCount;
 }
 
-function viewAllTask() {
-  liArr = ulToDo.getElementsByTagName("li");
-  for (var i = 0; i < liArr.length; i++) {
-    liArr[i].style.display = "block";
-  }
-  changeClassHref();
-}
-function viewActiveTask() {
-  liArr = ulToDo.getElementsByTagName("li");
-  for (var i = 0; i < liArr.length; i++) {
-    if (liArr[i].className == "completed") {
-      liArr[i].style.display = "none";
-    } else liArr[i].style.display = "block";
-  }
-  changeClassHref();
-}
-function viewCompletedTask() {
-  liArr = ulToDo.getElementsByTagName("li");
-  for (var i = 0; i < liArr.length; i++) {
-    if (liArr[i].className == "") {
-      liArr[i].style.display = "none";
-    } else liArr[i].style.display = "block";
-  }
-  changeClassHref();
-}
 function changeClassHref() {
   arrA = ulTodoCount.getElementsByTagName("a");
   for (i = 0; i < arrA.length; i++) {
     arrA[i].className = "";
   }
   event.target.className = "selected";
+}
+function enableFilters() {
+  a = event.target.textContent;
+  liArr = ulToDo.getElementsByTagName("li");
+  for (var i = 0; i < liArr.length; i++) {
+    switch (a) {
+      case "All":
+        liArr[i].style.display = "block";
+        break;
+      case "Completed":
+        if (liArr[i].className == "") {
+          liArr[i].style.display = "none";
+        } else liArr[i].style.display = "block";
+        break;
+      case "Active":
+        if (liArr[i].className == "completed") {
+          liArr[i].style.display = "none";
+        } else liArr[i].style.display = "block";
+        break;
+    }
+  }
+  changeClassHref();
 }
