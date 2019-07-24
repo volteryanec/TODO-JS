@@ -12,6 +12,7 @@ var ulToDo = document.getElementsByClassName("todo-list")[0];
 var newTodo = document.getElementsByClassName("new-todo")[0];
 var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
 var footer = createFooter();
+var toggleAll = document.getElementsByClassName("toggle-all")[0];
 
 window.onload = function() {
   tasksList.forEach(function(task) {
@@ -19,7 +20,7 @@ window.onload = function() {
   });
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
-  displayFoooter()
+  displayFoooter();
 };
 
 function createLiulToDo(task) {
@@ -70,7 +71,8 @@ function addNewTodo(event) {
   ulToDo.appendChild(createLiulToDo(newTask));
   event.target.value = "";
   countItemValue();
-  displayFoooter()
+  displayFoooter();
+  toggleAll.checked = false;
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -86,7 +88,7 @@ function deleteCurentTask(event) {
   deleteCurentLI();
   countItemValue();
   hiddenButton();
-  displayFoooter()
+  displayFoooter();
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
@@ -97,6 +99,7 @@ function changeOfTaskStatus(event) {
   });
   countItemValue();
   hiddenButton();
+  chekInputToggleAll();
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -178,7 +181,7 @@ function getClearActivTask() {
     }
   }
   hiddenButton();
-  displayFoooter()
+  displayFoooter();
 }
 function hiddenButton() {
   buttonComplite = document.getElementsByClassName("clear-completed")[0];
@@ -238,34 +241,79 @@ function createulTodoCount() {
 
 function changeClassHref() {
   arrA = ulTodoCount.getElementsByTagName("a");
+
   for (i = 0; i < arrA.length; i++) {
     arrA[i].className = "";
+    if (arrA[i].textContent == event.target.textContent)
+      event.target.className = "selected";
   }
-  event.target.className = "selected";
 }
 function enableFilters() {
   a = event.target.textContent;
-  liArr = ulToDo.getElementsByTagName("li");
-  for (var i = 0; i < liArr.length; i++) {
-    switch (a) {
-      case "All":
-        liArr[i].style.display = "block";
-        break;
-      case "Completed":
-        if (liArr[i].className == "") {
-          liArr[i].style.display = "none";
-        } else liArr[i].style.display = "block";
-        break;
-      case "Active":
-        if (liArr[i].className == "completed") {
-          liArr[i].style.display = "none";
-        } else liArr[i].style.display = "block";
-        break;
-    }
+
+  switch (a) {
+    case "All":
+      renderTasks(tasksList);
+      break;
+    case "Completed":
+      renderTasks(tasksList);
+      removeLiClassCompleted();
+      break;
+    case "Active":
+      renderTasks(tasksList);
+      removeLiClassEmpty();
+      break;
   }
   changeClassHref();
 }
 function displayFoooter() {
-  if (tasksList.length == 0) footer.style.display = "none";
-  else footer.style.display = "block";
+  label = document.getElementsByTagName("label")[0];
+  if (tasksList.length == 0) {
+    footer.style.display = "none";
+    label.style.display = "none";
+  } else {
+    footer.style.display = "block";
+    label.style.display = "block";
+  }
+}
+function allCheckLabel() {
+  arrA = ulTodoCount.querySelectorAll("a");
+  toggleAll.checked = toggleAll.checked == false ? true : false;
+  tasksList.forEach(function(elem) {
+    elem.completed = toggleAll.checked;
+  });
+  renderTasks(tasksList);
+
+  arrA.forEach(function(a) {
+    if ((a.className == "selected") & (a.text == "Completed")) {
+      removeLiClassCompleted();
+    }
+    if ((a.text == "Active") & (a.className == "selected")) {
+      removeLiClassEmpty();
+    }
+  });
+  countItemValue();
+  hiddenButton();
+}
+function renderTasks(tasks) {
+  ulToDo.innerHTML = "";
+  tasks.forEach(function(task) {
+    ulToDo.appendChild(createLiulToDo(task));
+  });
+}
+function chekInputToggleAll() {
+  function checkCompleted(elem) {
+    return elem.completed === true;
+  }
+  toggleAll.checked = tasksList.every(checkCompleted) === true ? true : false;
+}
+function removeLiClassCompleted() {
+  ulToDo.querySelectorAll("li").forEach(function(elem) {
+    if (elem.className == "") elem.remove(elem);
+  });
+}
+function removeLiClassEmpty() {
+  ulToDo.querySelectorAll("li").forEach(function(elem) {
+    if (elem.className == "completed") elem.remove(elem);
+  });
 }
