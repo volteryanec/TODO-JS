@@ -257,11 +257,11 @@ function enableFilters() {
       break;
     case "Completed":
       renderTasks(tasksList);
-      removeLiClassCompleted();
+      removeLiClass('');
       break;
     case "Active":
       renderTasks(tasksList);
-      removeLiClassEmpty();
+      removeLiClass('completed');
       break;
   }
   changeClassHref();
@@ -286,10 +286,10 @@ function allCheckLabel() {
 
   arrA.forEach(function(a) {
     if ((a.className == "selected") & (a.text == "Completed")) {
-      removeLiClassCompleted();
+      removeLiClass('');
     }
     if ((a.text == "Active") & (a.className == "selected")) {
-      removeLiClassEmpty();
+      removeLiClass("completed");
     }
   });
   countItemValue();
@@ -307,13 +307,9 @@ function chekInputToggleAll() {
   }
   toggleAll.checked = tasksList.every(checkCompleted) === true ? true : false;
 }
-function removeLiClassCompleted() {
+function removeLiClass(classLi) {
   ulToDo.querySelectorAll("li").forEach(function(elem) {
-    if (elem.className == "") elem.remove(elem);
+    if (elem.className == classLi) elem.remove(elem);
   });
 }
-function removeLiClassEmpty() {
-  ulToDo.querySelectorAll("li").forEach(function(elem) {
-    if (elem.className == "completed") elem.remove(elem);
-  });
-}
+
