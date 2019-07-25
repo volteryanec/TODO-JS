@@ -14,8 +14,25 @@ var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
 var footer = createFooter();
 var toggleAll = document.getElementsByClassName("toggle-all")[0];
 
+function getArr(id) {
+  arrJson = localStorage.getItem(id);
+  return JSON.parse(arrJson);
+}
+
+function saveTolocalStorage(id, data) {
+  localStorage.setItem(id, JSON.stringify(data));
+}
+
+function changeLocalStorage(id, key, newValue) {
+  var arr = getArr(id);
+  arr[key] = newValue;
+  saveTolocalStorage(id, arr);
+}
+if (getArr("todo") != undefined) tasksList = getArr("todo");
+
 window.onload = function() {
-  tasksList.forEach(function(task) {
+  saveTolocalStorage("todo", tasksList);
+  getArr("todo").forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
   newTodo.onchange = addNewTodo;
@@ -73,6 +90,7 @@ function addNewTodo(event) {
   countItemValue();
   displayFoooter();
   toggleAll.checked = false;
+  changeLocalStorage("todo", tasksList.length - 1, newTask);
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -100,6 +118,7 @@ function changeOfTaskStatus(event) {
   countItemValue();
   hiddenButton();
   chekInputToggleAll();
+  saveTolocalStorage("todo", tasksList);
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -141,6 +160,7 @@ function deleteCurentLI() {
       ulToDo.removeChild(li);
     }
   });
+  saveTolocalStorage("todo", tasksList);
 }
 function createFooter() {
   var footerElem = document.createElement("footer");
@@ -180,6 +200,7 @@ function getClearActivTask() {
       LiArr[i].remove(LiArr[i]);
     }
   }
+  saveTolocalStorage("todo", tasksList);
   hiddenButton();
   displayFoooter();
 }
@@ -257,11 +278,11 @@ function enableFilters() {
       break;
     case "Completed":
       renderTasks(tasksList);
-      removeLiClass('');
+      removeLiClass("");
       break;
     case "Active":
       renderTasks(tasksList);
-      removeLiClass('completed');
+      removeLiClass("completed");
       break;
   }
   changeClassHref();
@@ -286,7 +307,7 @@ function allCheckLabel() {
 
   arrA.forEach(function(a) {
     if ((a.className == "selected") & (a.text == "Completed")) {
-      removeLiClass('');
+      removeLiClass("");
     }
     if ((a.text == "Active") & (a.className == "selected")) {
       removeLiClass("completed");
@@ -312,4 +333,3 @@ function removeLiClass(classLi) {
     if (elem.className == classLi) elem.remove(elem);
   });
 }
-
