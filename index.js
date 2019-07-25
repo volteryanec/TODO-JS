@@ -18,11 +18,9 @@ function getArr(id) {
   arrJson = localStorage.getItem(id);
   return JSON.parse(arrJson);
 }
-
 function saveTolocalStorage(id, data) {
   localStorage.setItem(id, JSON.stringify(data));
 }
-
 function changeLocalStorage(id, key, newValue) {
   var arr = getArr(id);
   arr[key] = newValue;
@@ -32,14 +30,13 @@ if (getArr("todo") != undefined) tasksList = getArr("todo");
 
 window.onload = function() {
   saveTolocalStorage("todo", tasksList);
-  getArr("todo").forEach(function(task) {
+  tasksList.forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
   displayFoooter();
 };
-
 function createLiulToDo(task) {
   var li = document.createElement("li");
 
@@ -129,28 +126,27 @@ function changeClassLi() {
 }
 function changeInput() {
   if (event.key === "Enter") {
-    if (event.target.value == "") {
-      deleteCurentLI();
-    }
+    deleteEmptyLi();
     inputEdit = li.getElementsByClassName("edit")[0];
     inputEdit.onblur = false;
     li = event.target.parentElement;
+    li.className = li2.className == "completed editing" ? "completed" : "";
     label = li.querySelector("label");
     label.textContent = this.value;
-    li.className = li.className == "completed editing" ? "completed" : "";
   }
+  changeElemText(tasksList);
+  saveTolocalStorage("todo", tasksList);
 }
 function inputEditBlur() {
-  li = event.target.parentElement;
-  if (event.target.value == "") {
-    deleteCurentLI();
-  }
+  deleteEmptyLi();
   if (event.target.value != "") {
+    li = event.target.parentElement;
     label = li.querySelector("label");
     label.textContent = this.value;
-    li = event.target.parentElement;
     li.className = li.className == "completed editing" ? "completed" : "";
   }
+  changeElemText(tasksList);
+  saveTolocalStorage("todo", tasksList);
 }
 function deleteCurentLI() {
   tasksList.forEach(function(elem, index) {
@@ -315,6 +311,7 @@ function allCheckLabel() {
   });
   countItemValue();
   hiddenButton();
+  saveTolocalStorage("todo", tasksList);
 }
 function renderTasks(tasks) {
   ulToDo.innerHTML = "";
@@ -332,4 +329,16 @@ function removeLiClass(classLi) {
   ulToDo.querySelectorAll("li").forEach(function(elem) {
     if (elem.className == classLi) elem.remove(elem);
   });
+}
+function changeElemText(task) {
+  task.forEach(function(elem) {
+    if (li.id == elem.id) {
+      elem.text = label.textContent;
+    }
+  });
+}
+function deleteEmptyLi() {
+  if (event.target.value == "") {
+    deleteCurentLI();
+  }
 }
