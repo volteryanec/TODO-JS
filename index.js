@@ -115,6 +115,7 @@ function changeOfTaskStatus(event) {
   countItemValue();
   hiddenButton();
   chekInputToggleAll();
+  removeLiClass(checked);
   saveTolocalStorage("todo", tasksList);
 }
 function changeClassLi() {
