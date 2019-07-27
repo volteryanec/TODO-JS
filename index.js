@@ -107,12 +107,15 @@ function deleteCurentTask(event) {
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
+  arrA = ulTodoCount.getElementsByTagName("a");
   checked = event.target.checked;
   li.className = checked ? "completed" : "";
+  for (i = 0; i < arrA.length; i++) {
+    if(arrA[i].textContent != "All" & arrA[i].className == 'selected' ){
   tasksList.forEach(function(task) {
     if (task.id == li.id) task.completed = checked;
-    li.remove(li);
-  });
+        li.remove(li)
+  })}}
   countItemValue();
   hiddenButton();
   chekInputToggleAll();
