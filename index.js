@@ -111,11 +111,11 @@ function changeOfTaskStatus(event) {
   li.className = checked ? "completed" : "";
   tasksList.forEach(function(task) {
     if (task.id == li.id) task.completed = checked;
+    li.remove(li);
   });
   countItemValue();
   hiddenButton();
   chekInputToggleAll();
-  removeLiClass(checked);
   saveTolocalStorage("todo", tasksList);
 }
 function changeClassLi() {
