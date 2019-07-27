@@ -14,7 +14,22 @@ var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
 var footer = createFooter();
 var toggleAll = document.getElementsByClassName("toggle-all")[0];
 
+function getArr(id) {
+  arrJson = localStorage.getItem(id);
+  return JSON.parse(arrJson);
+}
+function saveTolocalStorage(id, data) {
+  localStorage.setItem(id, JSON.stringify(data));
+}
+function changeLocalStorage(id, key, newValue) {
+  var arr = getArr(id);
+  arr[key] = newValue;
+  saveTolocalStorage(id, arr);
+}
+if (getArr("todo") != undefined) tasksList = getArr("todo");
+
 window.onload = function() {
+  saveTolocalStorage("todo", tasksList);
   tasksList.forEach(function(task) {
     ulToDo.appendChild(createLiulToDo(task));
   });
@@ -22,7 +37,6 @@ window.onload = function() {
   parentDiv.appendChild(footer);
   displayFoooter();
 };
-
 function createLiulToDo(task) {
   var li = document.createElement("li");
 
@@ -73,6 +87,7 @@ function addNewTodo(event) {
   countItemValue();
   displayFoooter();
   toggleAll.checked = false;
+  changeLocalStorage("todo", tasksList.length - 1, newTask);
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -96,10 +111,12 @@ function changeOfTaskStatus(event) {
   li.className = checked ? "completed" : "";
   tasksList.forEach(function(task) {
     if (task.id == li.id) task.completed = checked;
+    li.remove(li);
   });
   countItemValue();
   hiddenButton();
   chekInputToggleAll();
+  saveTolocalStorage("todo", tasksList);
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -110,28 +127,27 @@ function changeClassLi() {
 }
 function changeInput() {
   if (event.key === "Enter") {
-    if (event.target.value == "") {
-      deleteCurentLI();
-    }
+    deleteEmptyLi();
     inputEdit = li.getElementsByClassName("edit")[0];
     inputEdit.onblur = false;
     li = event.target.parentElement;
+    li.className = li2.className == "completed editing" ? "completed" : "";
     label = li.querySelector("label");
     label.textContent = this.value;
-    li.className = li.className == "completed editing" ? "completed" : "";
   }
+  changeElemText(tasksList);
+  saveTolocalStorage("todo", tasksList);
 }
 function inputEditBlur() {
-  li = event.target.parentElement;
-  if (event.target.value == "") {
-    deleteCurentLI();
-  }
+  deleteEmptyLi();
   if (event.target.value != "") {
+    li = event.target.parentElement;
     label = li.querySelector("label");
     label.textContent = this.value;
-    li = event.target.parentElement;
     li.className = li.className == "completed editing" ? "completed" : "";
   }
+  changeElemText(tasksList);
+  saveTolocalStorage("todo", tasksList);
 }
 function deleteCurentLI() {
   tasksList.forEach(function(elem, index) {
@@ -141,6 +157,7 @@ function deleteCurentLI() {
       ulToDo.removeChild(li);
     }
   });
+  saveTolocalStorage("todo", tasksList);
 }
 function createFooter() {
   var footerElem = document.createElement("footer");
@@ -180,6 +197,7 @@ function getClearActivTask() {
       LiArr[i].remove(LiArr[i]);
     }
   }
+  saveTolocalStorage("todo", tasksList);
   hiddenButton();
   displayFoooter();
 }
@@ -257,11 +275,11 @@ function enableFilters() {
       break;
     case "Completed":
       renderTasks(tasksList);
-      removeLiClass('');
+      removeLiClass("");
       break;
     case "Active":
       renderTasks(tasksList);
-      removeLiClass('completed');
+      removeLiClass("completed");
       break;
   }
   changeClassHref();
@@ -286,7 +304,7 @@ function allCheckLabel() {
 
   arrA.forEach(function(a) {
     if ((a.className == "selected") & (a.text == "Completed")) {
-      removeLiClass('');
+      removeLiClass("");
     }
     if ((a.text == "Active") & (a.className == "selected")) {
       removeLiClass("completed");
@@ -294,6 +312,7 @@ function allCheckLabel() {
   });
   countItemValue();
   hiddenButton();
+  saveTolocalStorage("todo", tasksList);
 }
 function renderTasks(tasks) {
   ulToDo.innerHTML = "";
@@ -312,4 +331,15 @@ function removeLiClass(classLi) {
     if (elem.className == classLi) elem.remove(elem);
   });
 }
-
+function changeElemText(task) {
+  task.forEach(function(elem) {
+    if (li.id == elem.id) {
+      elem.text = label.textContent;
+    }
+  });
+}
+function deleteEmptyLi() {
+  if (event.target.value == "") {
+    deleteCurentLI();
+  }
+}
