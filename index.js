@@ -32,7 +32,6 @@ if (getArr("todo") != undefined) tasksList = getArr("todo");
 window.onload = function() {
   renderTasks(tasksList);
   newTodo.onchange = addNewTodo;
-
   parentDiv.appendChild(footer);
   setDefaultFilreredOnload();
   displayFoooter();
@@ -86,8 +85,8 @@ function addNewTodo(event) {
   event.target.value = "";
   countItemValue();
   displayFoooter();
-  toggleAll.checked = false;
-  changeLocalStorage("todo", tasksList.length - 1, newTask);
+  saveTolocalStorage("todo", tasksList);
+  chekedOnNewTodoFilter(this);
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -276,7 +275,6 @@ function changeClassHref() {
 }
 function enableFilters() {
   a = event.target.textContent;
-  console.log(event.target.hash);
   switch (a) {
     case "All":
       renderTasks(tasksList);
@@ -352,7 +350,6 @@ function deleteEmptyLi() {
   }
 }
 function setDefaultFilreredOnload() {
-  arrA = ulTodoCount.querySelectorAll("a");
   switch (hashA) {
     case "#/completed":
       renderTasks(tasksList);
@@ -362,9 +359,6 @@ function setDefaultFilreredOnload() {
       renderTasks(tasksList);
       removeLiClass("completed");
       break;
-    case "#/":
-      renderTasks(tasksList);
-      break;
   }
   countItemValue();
 }
@@ -372,4 +366,10 @@ function setAClassname(a) {
   if (a.hash == location.hash) {
     return (a.className = "selected");
   }
+}
+function chekedOnNewTodoFilter(obj) {
+  liOnNewTodo =
+    obj.parentElement.nextElementSibling.lastElementChild.lastElementChild;
+
+  if (location.hash == "#/completed") liOnNewTodo.remove(liOnNewTodo);
 }
