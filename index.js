@@ -29,8 +29,26 @@ function changeLocalStorage(id, key, newValue) {
 }
 if (getArr("todo") != undefined) tasksList = getArr("todo");
 
+function getArr(id) {
+  arrJson = localStorage.getItem(id);
+  return JSON.parse(arrJson);
+}
+function saveTolocalStorage(id, data) {
+  localStorage.setItem(id, JSON.stringify(data));
+}
+function changeLocalStorage(id, key, newValue) {
+  var arr = getArr(id);
+  arr[key] = newValue;
+  saveTolocalStorage(id, arr);
+}
+if (getArr("todo") != undefined) tasksList = getArr("todo");
+
 window.onload = function() {
   renderTasks(tasksList);
+  saveTolocalStorage("todo", tasksList);
+  tasksList.forEach(function(task) {
+    ulToDo.appendChild(createLiulToDo(task));
+  });
   newTodo.onchange = addNewTodo;
 
   parentDiv.appendChild(footer);
@@ -110,6 +128,7 @@ function changeOfTaskStatus(event) {
   arrA = ulTodoCount.getElementsByTagName("a");
   checked = event.target.checked;
   li.className = checked ? "completed" : "";
+
   for (i = 0; i < arrA.length; i++) {
     if ((arrA[i].textContent != "All") & (arrA[i].className == "selected")) {
       tasksList.forEach(function(task) {
@@ -125,6 +144,16 @@ function changeOfTaskStatus(event) {
     chekInputToggleAll();
     saveTolocalStorage("todo", tasksList);
   }
+
+  tasksList.forEach(function(task) {
+    if (task.id == li.id) task.completed = checked;
+    li.remove(li);
+  });
+  countItemValue();
+  hiddenButton();
+  chekInputToggleAll();
+  saveTolocalStorage("todo", tasksList);
+
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -205,6 +234,7 @@ function getClearActivTask() {
       LiArr[i].remove(LiArr[i]);
     }
   }
+  saveTolocalStorage("todo", tasksList);
   hiddenButton();
   displayFoooter();
   saveTolocalStorage("todo", tasksList);
@@ -351,6 +381,7 @@ function deleteEmptyLi() {
     deleteCurentLI();
   }
 }
+
 function setDefaultFilreredOnload() {
   arrA = ulTodoCount.querySelectorAll("a");
   switch (hashA) {
@@ -373,3 +404,4 @@ function setAClassname(a) {
     return (a.className = "selected");
   }
 }
+
