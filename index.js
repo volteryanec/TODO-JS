@@ -13,6 +13,7 @@ var newTodo = document.getElementsByClassName("new-todo")[0];
 var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
 var footer = createFooter();
 var toggleAll = document.getElementsByClassName("toggle-all")[0];
+var hashA = window.location.hash;
 
 function getArr(id) {
   arrJson = localStorage.getItem(id);
@@ -29,12 +30,10 @@ function changeLocalStorage(id, key, newValue) {
 if (getArr("todo") != undefined) tasksList = getArr("todo");
 
 window.onload = function() {
-  saveTolocalStorage("todo", tasksList);
-  tasksList.forEach(function(task) {
-    ulToDo.appendChild(createLiulToDo(task));
-  });
+  renderTasks(tasksList);
   newTodo.onchange = addNewTodo;
   parentDiv.appendChild(footer);
+  setDefaultFilreredOnload();
   displayFoooter();
 };
 function createLiulToDo(task) {
@@ -86,8 +85,8 @@ function addNewTodo(event) {
   event.target.value = "";
   countItemValue();
   displayFoooter();
-  toggleAll.checked = false;
-  changeLocalStorage("todo", tasksList.length - 1, newTask);
+  saveTolocalStorage("todo", tasksList);
+  chekedOnNewTodoFilter(this);
 }
 function getId(tasksList) {
   if (!tasksList.length) return "1";
@@ -107,16 +106,24 @@ function deleteCurentTask(event) {
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
+  arrA = ulTodoCount.getElementsByTagName("a");
   checked = event.target.checked;
   li.className = checked ? "completed" : "";
-  tasksList.forEach(function(task) {
-    if (task.id == li.id) task.completed = checked;
-    li.remove(li);
-  });
-  countItemValue();
-  hiddenButton();
-  chekInputToggleAll();
-  saveTolocalStorage("todo", tasksList);
+  for (i = 0; i < arrA.length; i++) {
+    if ((arrA[i].textContent != "All") & (arrA[i].className == "selected")) {
+      tasksList.forEach(function(task) {
+        if (task.id == li.id) task.completed = checked;
+        li.remove(li);
+      });
+    } else
+      tasksList.forEach(function(task) {
+        if (task.id == li.id) task.completed = checked;
+      });
+    countItemValue();
+    hiddenButton();
+    chekInputToggleAll();
+    saveTolocalStorage("todo", tasksList);
+  }
 }
 function changeClassLi() {
   li = event.target.parentElement.parentElement;
@@ -197,9 +204,9 @@ function getClearActivTask() {
       LiArr[i].remove(LiArr[i]);
     }
   }
-  saveTolocalStorage("todo", tasksList);
   hiddenButton();
   displayFoooter();
+  saveTolocalStorage("todo", tasksList);
 }
 function hiddenButton() {
   buttonComplite = document.getElementsByClassName("clear-completed")[0];
@@ -216,11 +223,11 @@ function createulTodoCount() {
   ulTodoCount.className = "filters";
 
   li = document.createElement("li");
-  a = document.createElement("a");
+  var a = document.createElement("a");
   span = document.createElement("span");
   span.textContent = " ";
   a.href = "#/";
-  a.className = "selected";
+  a.className = setAClassname(a);
   a.textContent = "All";
   a.onclick = enableFilters;
   ulTodoCount.appendChild(li);
@@ -229,9 +236,9 @@ function createulTodoCount() {
 
   li2 = document.createElement("li");
   ulTodoCount.appendChild(li2);
-  a2 = document.createElement("a");
+  var a2 = document.createElement("a");
   a2.href = "#/active";
-  a2.className = "";
+  a2.className = setAClassname(a2);
   a2.textContent = "Active";
   a2.onclick = enableFilters;
   li2.appendChild(a2);
@@ -241,9 +248,9 @@ function createulTodoCount() {
 
   li3 = document.createElement("li");
   ulTodoCount.appendChild(li3);
-  a3 = document.createElement("a");
+  var a3 = document.createElement("a");
   a3.href = "#/completed";
-  a3.className = "";
+  a3.className = setAClassname(a3);
   a3.textContent = "Completed";
   a3.onclick = enableFilters;
   li3.appendChild(a3);
@@ -268,7 +275,6 @@ function changeClassHref() {
 }
 function enableFilters() {
   a = event.target.textContent;
-
   switch (a) {
     case "All":
       renderTasks(tasksList);
@@ -342,4 +348,28 @@ function deleteEmptyLi() {
   if (event.target.value == "") {
     deleteCurentLI();
   }
+}
+function setDefaultFilreredOnload() {
+  switch (hashA) {
+    case "#/completed":
+      renderTasks(tasksList);
+      removeLiClass("");
+      break;
+    case "#/active":
+      renderTasks(tasksList);
+      removeLiClass("completed");
+      break;
+  }
+  countItemValue();
+}
+function setAClassname(a) {
+  if (a.hash == location.hash) {
+    return (a.className = "selected");
+  }
+}
+function chekedOnNewTodoFilter(obj) {
+  liOnNewTodo =
+    obj.parentElement.nextElementSibling.lastElementChild.lastElementChild;
+
+  if (location.hash == "#/completed") liOnNewTodo.remove(liOnNewTodo);
 }
