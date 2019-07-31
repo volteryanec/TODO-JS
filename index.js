@@ -7,11 +7,12 @@ var tasksList = [
   { id: "6", text: "override", completed: true },
   { id: "7", text: "generate", completed: true }
 ];
-
+var main = document.getElementsByClassName("main")[0];
 var ulToDo = document.getElementsByClassName("todo-list")[0];
 var newTodo = document.getElementsByClassName("new-todo")[0];
 var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
 var toggleAll = document.getElementsByClassName("toggle-all")[0];
+var label = document.getElementsByTagName("label")[0];
 var hashA = window.location.hash;
 
 function getArr(id) {
@@ -29,12 +30,16 @@ function changeLocalStorage(id, key, newValue) {
 if (getArr("todo") != undefined) tasksList = getArr("todo");
 
 window.onload = function() {
+  if (tasksList == 0) {
+    main.remove(main);
+  }
   renderTasks(tasksList);
   newTodo.onchange = addNewTodo;
   if (tasksList.length != 0) {
     createFooter();
     setDefaultFilreredOnload();
     ClearCompliteTask();
+    chekInputToggleAll();
   }
 };
 function createLiulToDo(task) {
@@ -76,12 +81,13 @@ function createLiulToDo(task) {
   return li;
 }
 function addNewTodo(event) {
-  if (tasksList.length == 0) {
+  if (tasksList.length === 0) {
+    parentDiv.insertAdjacentElement("beforeEnd", main);
+    label.htmlFor = "toggle-all";
+    main.insertAdjacentElement("afterBegin", label);
+    main.insertAdjacentElement("afterBegin", toggleAll);
+    toggleAll.checked = false;
     createFooter();
-    var label = document.createElement("label");
-    label.htmlFor = '"toggle-all"';
-    main = document.getElementsByClassName("main")[0];
-    toggleAll.insertAdjacentElement("afterEnd", label);
   }
   var newTask = {};
   newTask.id = getId(tasksList);
@@ -377,9 +383,8 @@ function ClearCompliteTask() {
 }
 function removeFooterAndLabel() {
   footer = document.getElementsByClassName("footer")[0];
-  label = document.getElementsByTagName("label")[0];
   if (tasksList == 0) {
     footer.remove(footer);
-    label.remove(label);
+    main.remove(main);
   }
 }
