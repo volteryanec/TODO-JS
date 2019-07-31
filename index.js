@@ -11,7 +11,6 @@ var tasksList = [
 var ulToDo = document.getElementsByClassName("todo-list")[0];
 var newTodo = document.getElementsByClassName("new-todo")[0];
 var parentDiv = document.getElementsByClassName("todoapp")[0].firstElementChild;
-var footer = createFooter();
 var toggleAll = document.getElementsByClassName("toggle-all")[0];
 var hashA = window.location.hash;
 
@@ -32,13 +31,14 @@ if (getArr("todo") != undefined) tasksList = getArr("todo");
 window.onload = function() {
   renderTasks(tasksList);
   newTodo.onchange = addNewTodo;
-  parentDiv.appendChild(footer);
-  setDefaultFilreredOnload();
-  displayFoooter();
+  if (tasksList.length != 0) {
+    createFooter();
+    setDefaultFilreredOnload();
+    ClearCompliteTask();
+  }
 };
 function createLiulToDo(task) {
   var li = document.createElement("li");
-
   var classNameli = task.completed ? "completed" : "";
   var statusTask = task.completed ? "checked" : "";
   li.className = classNameli;
@@ -76,6 +76,13 @@ function createLiulToDo(task) {
   return li;
 }
 function addNewTodo(event) {
+  if (tasksList.length == 0) {
+    createFooter();
+    var label = document.createElement("label");
+    label.htmlFor = '"toggle-all"';
+    main = document.getElementsByClassName("main")[0];
+    toggleAll.insertAdjacentElement("afterEnd", label);
+  }
   var newTask = {};
   newTask.id = getId(tasksList);
   newTask.text = event.target.value;
@@ -84,7 +91,6 @@ function addNewTodo(event) {
   ulToDo.appendChild(createLiulToDo(newTask));
   event.target.value = "";
   countItemValue();
-  displayFoooter();
   saveTolocalStorage("todo", tasksList);
   chekedOnNewTodoFilter(this);
 }
@@ -101,8 +107,8 @@ function deleteCurentTask(event) {
   li = event.target.parentElement.parentElement;
   deleteCurentLI();
   countItemValue();
-  hiddenButton();
-  displayFoooter();
+  ClearCompliteTask();
+  removeFooterAndLabel();
 }
 function changeOfTaskStatus(event) {
   li = event.target.parentElement.parentElement;
@@ -120,7 +126,7 @@ function changeOfTaskStatus(event) {
         if (task.id == li.id) task.completed = checked;
       });
     countItemValue();
-    hiddenButton();
+    ClearCompliteTask();
     chekInputToggleAll();
     saveTolocalStorage("todo", tasksList);
   }
@@ -180,8 +186,8 @@ function createFooter() {
   footerElem.appendChild(spanTodoCount);
   strong.textContent = getDefaultCountItem();
   footerElem.appendChild(createulTodoCount());
-
-  return footerElem;
+  parentDiv.appendChild(footerElem);
+  return parentDiv;
 }
 function countItemValue() {
   var strongValue = document.querySelector("strong");
@@ -204,19 +210,9 @@ function getClearActivTask() {
       LiArr[i].remove(LiArr[i]);
     }
   }
-  hiddenButton();
-  displayFoooter();
+  buttonClearComplite.remove(buttonClearComplite);
+  removeFooterAndLabel();
   saveTolocalStorage("todo", tasksList);
-}
-function hiddenButton() {
-  buttonComplite = document.getElementsByClassName("clear-completed")[0];
-  function checkCompleted(elem) {
-    return elem.completed === true;
-  }
-  if (tasksList.some(checkCompleted) === true) buttonComplite.hidden = false;
-  else {
-    buttonComplite.hidden = true;
-  }
 }
 function createulTodoCount() {
   ulTodoCount = document.createElement("ul");
@@ -255,12 +251,6 @@ function createulTodoCount() {
   a3.onclick = enableFilters;
   li3.appendChild(a3);
 
-  buttonClearComplite = document.createElement("button");
-  buttonClearComplite.className = "clear-completed";
-  buttonClearComplite.textContent = "Clear completed";
-  buttonClearComplite.onclick = getClearActivTask;
-  ulTodoCount.appendChild(buttonClearComplite);
-
   return ulTodoCount;
 }
 
@@ -290,16 +280,7 @@ function enableFilters() {
   }
   changeClassHref();
 }
-function displayFoooter() {
-  label = document.getElementsByTagName("label")[0];
-  if (tasksList.length == 0) {
-    footer.style.display = "none";
-    label.style.display = "none";
-  } else {
-    footer.style.display = "block";
-    label.style.display = "block";
-  }
-}
+
 function allCheckLabel() {
   arrA = ulTodoCount.querySelectorAll("a");
   toggleAll.checked = toggleAll.checked == false ? true : false;
@@ -317,7 +298,7 @@ function allCheckLabel() {
     }
   });
   countItemValue();
-  hiddenButton();
+  ClearCompliteTask();
   saveTolocalStorage("todo", tasksList);
 }
 function renderTasks(tasks) {
@@ -372,4 +353,33 @@ function chekedOnNewTodoFilter(obj) {
     obj.parentElement.nextElementSibling.lastElementChild.lastElementChild;
 
   if (location.hash == "#/completed") liOnNewTodo.remove(liOnNewTodo);
+}
+function ClearCompliteTask() {
+  function checkCompleted(elem) {
+    buttonClearComplite = document.getElementsByClassName("clear-completed")[0];
+    return elem.completed === true;
+  }
+  if (
+    tasksList.some(checkCompleted) === true &&
+    buttonClearComplite == undefined
+  ) {
+    buttonClearComplite = document.createElement("button");
+    buttonClearComplite.className = "clear-completed";
+    buttonClearComplite.textContent = "Clear completed";
+    buttonClearComplite.onclick = getClearActivTask;
+    ulTodoCount.appendChild(buttonClearComplite);
+  }
+  if (
+    tasksList.some(checkCompleted) === false &&
+    document.getElementsByClassName("clear-completed")[0] != undefined
+  )
+    buttonClearComplite.remove(buttonClearComplite);
+}
+function removeFooterAndLabel() {
+  footer = document.getElementsByClassName("footer")[0];
+  label = document.getElementsByTagName("label")[0];
+  if (tasksList == 0) {
+    footer.remove(footer);
+    label.remove(label);
+  }
 }
