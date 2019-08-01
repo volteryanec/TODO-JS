@@ -22,11 +22,7 @@ function getArr(id) {
 function saveTolocalStorage(id, data) {
   localStorage.setItem(id, JSON.stringify(data));
 }
-function changeLocalStorage(id, key, newValue) {
-  var arr = getArr(id);
-  arr[key] = newValue;
-  saveTolocalStorage(id, arr);
-}
+
 if (getArr("todo") != undefined) tasksList = getArr("todo");
 
 window.onload = function() {
