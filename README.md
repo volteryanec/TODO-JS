@@ -1,2 +1,1 @@
-
-<a href='https://volteryanec.github.io/js-todo/'>Press for preview</a>
+<a href='https://volteryanec.github.io/TODO-JS/'>Click for preview</a>
